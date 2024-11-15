@@ -1,3 +1,4 @@
+import streamlit as st
 from openai import OpenAI
 import base64
 
@@ -8,7 +9,6 @@ client = OpenAI(
 )
 
 model_name = "stabilityai/stable-diffusion-3.5-large"
-
 
 def generate_image(prompt):
     """
@@ -22,39 +22,42 @@ def generate_image(prompt):
         )
         return response.data[0].b64_json
     except Exception as e:
-        print(f"Error generating image: {e}")
+        st.error(f"Error generating image: {e}")
         return None
 
 
-def save_image(base64_data, filename="generated_image.png"):
+def save_image(base64_data):
     """
-    Save the base64-encoded image to a file.
+    Display the base64-encoded image in Streamlit.
     """
     try:
-        with open(filename, "wb") as f:
-            f.write(base64.b64decode(base64_data))
-        print(f"Image saved as {filename}")
+        image_data = base64.b64decode(base64_data)
+        st.image(image_data, caption="Generated Image", use_column_width=True)
     except Exception as e:
-        print(f"Error saving image: {e}")
+        st.error(f"Error displaying image: {e}")
 
 
 def main():
     """
     Main function to get input from the user and generate an image.
     """
-    prompt = input("Enter your image prompt (e.g., A beautiful sunrise over a mountain range): ").strip()
-    if not prompt:
-        print("Prompt cannot be empty.")
-        return
-
-    print("Generating image, please wait...")
-    image_base64 = generate_image(prompt)
-
-    if image_base64:
-        save_image(image_base64)
-        print("Image generation successful!")
-    else:
-        print("Failed to generate image.")
+    st.title("Image Generation with Stable Diffusion")
+    
+    # Create a text input field for the prompt
+    prompt = st.text_input("Enter your image prompt", "A beautiful sunrise over a mountain range")
+    
+    if st.button("Generate Image"):
+        if prompt:
+            st.info("Generating image, please wait...")
+            image_base64 = generate_image(prompt)
+            
+            if image_base64:
+                save_image(image_base64)
+                st.success("Image generation successful!")
+            else:
+                st.error("Failed to generate image.")
+        else:
+            st.warning("Prompt cannot be empty.")
 
 
 if __name__ == "__main__":

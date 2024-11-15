@@ -22,7 +22,8 @@ On the web interface:
 
     Enter a text prompt in the input box (e.g., " MEME PNUT Squirrel ").
     Click the "Generate Image" button to create the image based on the prompt.
-    
+  
+
 
     
 

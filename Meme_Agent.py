@@ -26,13 +26,13 @@ def generate_image(prompt):
         return None
 
 
-def save_image(base64_data):
+def display_image(base64_data):
     """
     Display the base64-encoded image in Streamlit.
     """
     try:
         image_data = base64.b64decode(base64_data)
-        st.image(image_data, caption="Generated Image", use_column_width=True)
+        st.image(image_data, caption="Generated Image", use_container_width=True)  # use_container_width to avoid deprecation warning
     except Exception as e:
         st.error(f"Error displaying image: {e}")
 
@@ -41,24 +41,28 @@ def main():
     """
     Main function to get input from the user and generate an image.
     """
-    st.title("Image Generation with Stable Diffusion")
-    
+    st.title("Virtuals MEME Fun Agent ")
+
     # Create a text input field for the prompt
-    prompt = st.text_input("Enter your image prompt", "A beautiful sunrise over a mountain range")
-    
+    prompt = st.text_input("Enter your image prompt", "A PNUT Squirrel")
+
+    # Button to generate an image
     if st.button("Generate Image"):
         if prompt:
             st.info("Generating image, please wait...")
             image_base64 = generate_image(prompt)
             
             if image_base64:
-                save_image(image_base64)
+                display_image(image_base64)
                 st.success("Image generation successful!")
             else:
                 st.error("Failed to generate image.")
         else:
             st.warning("Prompt cannot be empty.")
-
+    
+    # Button to generate a new image (without refreshing the page)
+    if st.button("Generate Another Image"):
+        st.rerun()  # This will reset the prompt and regenerate the image
 
 if __name__ == "__main__":
     main()
